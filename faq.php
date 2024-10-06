@@ -20,7 +20,7 @@
         <p>
             The draft takes place over three rounds. Every round, all players get to pick their a) faction or b) map slice or c) table position (including the speaker position) until they have one of each.
             The order that players make these choices is random in the first round. The second round picks are done in the reverse order, and the third round reverts to the same order as the first round, making a boustrophedon draft.
-            One all players have made their choice, the map is assembled from the slices, and players can start the game proper.
+            Once all players have made their choice, the map is assembled from the slices, and players can start the game proper.
         </p>
         <p>
             Each slice consists of five systems, excluding a player’s home system. These comprise of the four systems closer to that player’s home system than any other player’s
@@ -45,6 +45,22 @@
         <p>
             Well, that kind of depends on how popular this gets. Hosting isn't free, sadly, so I'm planning to weed out drafts older than one year every so often.
         </p>
+
+        <h4>Can I help?</h4>
+        <p>
+            Sure you can! This is an open source project, if you're a programmer you can check out if there's any <a href="https://github.com/shenanigans-be/miltydraft/issues" target="_blank">open issues</a> you might want to tacke.<br />
+            If you're not technically inclined: you can make a paypal donation to help pay for hosting-costs. <br />
+            Please don't feel like you have to. I'm more than happy to keep this site running by myself as my gift to a wonderful community.
+        </p>
+        <form action="https://www.paypal.com/donate" method="post" target="_top">
+            <input type="hidden" name="business" value="5JW6PWQTX8C58" />
+            <input type="hidden" name="no_recurring" value="0" />
+            <input type="hidden" name="item_name" value="Hi there! Thank you so much for considering a donation to the Miltydraft tool." />
+            <input type="hidden" name="currency_code" value="EUR" />
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+            <img alt="" border="0" src="https://www.paypal.com/en_BE/i/scr/pixel.gif" width="1" height="1" />
+        </form>
+
 
         <h4>Why only five players without PoK?</h4>
         <p>
@@ -90,5 +106,17 @@
             The code is on <a href="https://github.com/shenanigans-be/miltydraft" target="_blank">Github</a> if you want to report an issue or even contribute!<br />
             If you'd like to reach out to me directly, you can do so on <a href="https://twitter.com/samtubbax" target="_blank">Twitter</a> or <a href="https://www.reddit.com/user/notcleverenough" target="_blank">Reddit</a>.
         </p>
+
+        <h4>Oh no, I did something wrong! How do I fix it?</h4>
+        <p>
+            You can ask the admin to Undo the last pick. The undo button can be found in the admin's "Log" tab.
+        </p>
+
+        <h4><strong style="opacity: 0.6">June 2023</strong>: What's all this new stuff?</h4>
+        <p>
+            The tool now supports the Discordant Stars expansion (big shoutout to <a href="https://github.com/JoelNarr" target="_blank">JoelNarr</a> who did most of the work)<br />
+            and I've added functionality for admins to regenerate the options if they're not entirely to their liking. As well as a "slice"-view in the map tab.
+        </p>
+
     </div>
 </div>

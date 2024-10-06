@@ -1,6 +1,7 @@
 <?php require_once 'boot.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +11,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,600;1,300&family=Staatliches&display=swap" rel="stylesheet">
+
+    <meta property="og:image" content="<?= url('og.png') ?>" />
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#1a2266">
+    <meta name="msapplication-TileColor" content="#fdfcf8">
+    <meta name="theme-color" content="#ffffff">
 </head>
+
 <body>
     <div class="container">
         <div class="content-wrap">
@@ -31,46 +43,76 @@
             </nav>
 
             <div class="tab active" id="generator">
-                <form action="generate.php" method="post">
+                <form id="generate-form" action="generate.php" method="post">
                     <div class="section">
                         <div class="content-wrap">
                             <div class="header">
-                                <h3>Players</h3>
+                                <div>
+                                    <h3>Players</h3>
+                                    <button id="enable_alliance_mode" type="button">
+                                        Switch to Alliance Mode
+                                    </button>
+
+                                    <button class="alliance_only" id="disable_alliance_mode" type="button">
+                                        Switch to Regular Mode
+                                    </button>
+                                </div>
                                 <p class="help">
-                                    Choose the number of players and fill in their names. Draft order will be randomised.
+                                    Choose the number of players and fill in their names. Draft order will be randomised unless otherwise specified (in the advanced settings below).
                                 </p>
+
+
                             </div>
                             <div class="content">
+
                                 <div class="input">
                                     <label for="num_players">
                                         Number of players
                                     </label>
                                     <input type="number" name="num_players" id="num_players" value="6" min="3" max="8" required />
+
+                                    <p class="error" id="even_player_number_error">
+                                        You must use an equal number of players in alliance mode
+                                    </p>
                                 </div>
 
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Test") ?>" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Test") ?>" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Test") ?>" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Test") ?>" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Test") ?>" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Test") ?>" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" />
-                                </div>
-                                <div class="input player">
-                                    <input type="text" placeholder="Player Name" name="player[]" />
+                                <div class="players_inputs">
+                                    <div class="alliance_team team_a">
+                                        <p class="team_label">Team 1</p>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Amy") ?>" />
+                                        </div>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Ben") ?>" />
+                                        </div>
+                                    </div>
+                                    <div class="alliance_team team_b">
+                                        <p class="team_label">Team 2</p>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Charlie") ?>" />
+                                        </div>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Desmond") ?>" />
+                                        </div>
+                                    </div>
+                                    <div class="alliance_team team_c">
+                                        <p class="team_label">Team 3</p>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Esther") ?>" />
+                                        </div>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" value="<?= e(get('debug', false), "Frank") ?>" />
+                                        </div>
+                                    </div>
+                                    <div class="alliance_team team_d">
+                                        <p class="team_label">Team 4</p>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" />
+                                        </div>
+                                        <div class="input player">
+                                            <input type="text" placeholder="Player Name" name="player[]" />
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <a class="btn small" href="#" id="add-player" title="Add Player">+</a>
@@ -80,6 +122,58 @@
 
                     </div>
 
+                    <div class="section">
+                        <div class="content-wrap">
+                            <div class="header">
+                                <h3>Alliance Game Variant</h3>
+                                <p class="help">
+                                    The "Alliance" Variant is an Optional play mode that was introduced in Codex II (Affinity)<br />
+                                    <a target="_blank" href="https://twilight-imperium.fandom.com/wiki/Alliance_Game_Variant">Learn more</a>
+                                </p>
+                            </div>
+                            <div class="content">
+                                <label for="alliance_toggle" class="check">
+                                    <input type="checkbox" name="alliance_on" id="alliance_toggle" value="1" /> Enabled
+                                </label>
+                                <div class="alliance_only alliance_settings">
+                                    <h4>Team creation</h4>
+                                    <label class="check">
+                                        <input type="radio" name="alliance_teams" value="preset" checked />
+                                        Preset teams
+                                    </label>
+                                    <label class="check">
+                                        <input type="radio" name="alliance_teams" value="random" />
+                                        Random teams
+                                    </label>
+                                    <br>
+                                    <h4>Force teammates position</h4>
+                                    <label class="check">
+                                        <input type="radio" name="alliance_teams_position" value="none" checked />
+                                        None
+                                    </label>
+                                    <label class="check">
+                                        <input type="radio" name="alliance_teams_position" value="neighbors" />
+                                        Neighbors
+                                    </label>
+                                    <label class="check">
+                                        <input type="radio" name="alliance_teams_position" value="opposites" />
+                                        Opposites
+                                    </label>
+                                    <br>
+                                    <h4>Force team double picks</h4>
+                                    <label class="check">
+                                        <input type="radio" name="force_double_picks" value="false" checked />
+                                        No
+                                    </label>
+                                    <label class="check">
+                                        <input type="radio" name="force_double_picks" value="true" />
+                                        Yes
+                                    </label>
+                                    <p class="help">Choose yes if you want both teammates to choose within the same category at once.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="section">
 
                         <div class="content-wrap">
@@ -92,10 +186,10 @@
                                         Number of Slices
                                     </label>
 
-                                    <input type="number" id="num_slices" name="num_slices" value="7" max="9" />
+                                    <input type="number" id="num_slices" name="num_slices" value="7" max="13" />
                                     <span class="help">
                                         Note: The slices are random and not necessarily balanced (more on that below), so increasing this number makes it more relaxed for players to choose.<br />
-                                        Number of players + 1 is generally recommended. Can't have more than 9 cause you run out of tiles.
+                                        Number of players + 1 is generally recommended. Can't have more than 9 without DS+ tiles or 13 with DS+, cause you run out of tiles.
                                     </span>
                                 </div>
 
@@ -113,37 +207,45 @@
 
                                 <div class="input">
                                     <label for="pok" class="check">
-                                        <input type="checkbox" name="include_pok" id="pok" checked /> Include Prophecy Of Kings
+                                        <input type="checkbox" name="include_pok" id="pok" checked /> Use Prophecy Of Kings Expansion
                                     </label>
                                     <span class="help">
-                                        Include the factions and tiles from the Prophecy of Kings expansion.<br /><br/>
+                                        Include the factions and tiles from the Prophecy of Kings expansion.<br /><br />
                                         <strong>IMPORTANT NOTE: If you don't include PoK you can only organise drafts up to 5 players (because you can only generate 5 valid slices with the base-game tiles)!</strong>
                                     </span>
                                 </div>
-
-                                <h4>Faction Options</h4>
                                 <div class="input">
-                                    <label for="basef" class="check">
-                                        <input type="checkbox" name="include_base_factions" id="basef" checked /> Include Base Game
-                                    </label>
-                                    <label for="pokf" class="check">
-                                        <input type="checkbox" name="include_pok_factions" id="pokf" checked /> Include Prophecy Of Kings
-                                    </label>
-                                    <label for="keleres" class="check">
-                                        <input type="checkbox" name="include_keleres" id="keleres" /> Include The Council Keleres
+                                    <label for="include_ds_tiles" class="check">
+                                        <input type="checkbox" name="include_ds_tiles" id="include_ds_tiles" /> Use Discordant Stars Plus tiles
                                     </label>
                                     <span class="help">
-                                        The Council Keleres was introduced in <a href="https://images-cdn.fantasyflightgames.com/filer_public/35/e1/35e10f37-4b6d-4479-a117-4e2c571ddfa7/ti_codex_volume_3_vigil_v2_1-compressed.pdf">Codex III</a>.
+                                        Include the new tiles from the Unofficial Discordant Stars Plus expansion.
+                                    </span>
+                                </div>
+
+                                <h4>Draftable Factions:</h4>
+                                <div class="input">
+                                    <label for="basef" class="check">
+                                        <input type="checkbox" class="draft-faction" data-num="17" data-set="base" name="include_base_factions" id="basef" checked /> Include Base Game
+                                    </label>
+                                    <label for="pokf" class="check">
+                                        <input type="checkbox" class="draft-faction" data-num="7" data-set="pok" name="include_pok_factions" id="pokf" checked /> Include Prophecy Of Kings
+                                    </label>
+                                    <label for="keleres" class="check">
+                                        <input type="checkbox" name="include_keleres" class="draft-faction" data-num="1" data-set="keleres" id="keleres" /> Include The Council Keleres
+                                    </label>
+                                    <span class="help">
+                                        The Council Keleres was introduced in <a target="_blank" href="https://images-cdn.fantasyflightgames.com/filer_public/35/e1/35e10f37-4b6d-4479-a117-4e2c571ddfa7/ti_codex_volume_3_vigil_v2_1-compressed.pdf">Codex III</a>.
                                         (PoK required). For simplicity's sake I'll leave it up to each group to decide how they want to handle things (including the very limited possibility of all 3 flavours also being picked). Just something to keep in mind.
                                     </span>
                                     <label for="discordant" class="check">
-                                        <input type="checkbox" name="include_discordant" id="discordant" /> Include Discordant Stars
+                                        <input type="checkbox" name="include_discordant" class="draft-faction" data-num="24" data-set="discordant" id="discordant" /> Include Discordant Stars
                                     </label>
                                     <span class="help">
-                                        <a href="https://www.reddit.com/r/twilightimperium/comments/pvbbie/discordant_stars_24_homebrew_factions/">Discordant Stars</a> is a fan made faction pack introduced by members of the Discord community.
+                                        <a target="_blank" href="https://www.reddit.com/r/twilightimperium/comments/pvbbie/discordant_stars_24_homebrew_factions/">Discordant Stars</a> is a fan made faction pack introduced by members of the Discord community.
                                     </span>
                                     <label for="discordantexp" class="check">
-                                        <input type="checkbox" name="include_discordantexp" id="discordantexp" /> Include Discordant Stars Plus
+                                        <input type="checkbox" name="include_discordantexp" class="draft-faction" data-num="10" data-set="discordantexp" id="discordantexp" /> Include Discordant Stars Plus
                                     </label>
                                     <span class="help">
                                         Ten additional factions were added to Discordant Stars as an expansion: Bentor, Nokar, Gledge, Lanefir, Kyro, Ghoti, Kolume, Cheiran, Kjalengard, and Edyn.
@@ -154,7 +256,7 @@
                                     <label for="game_name">
                                         Game Name
                                     </label>
-                                    <input type="text" placeholder="Game Name" maxlength="100" name="game_name" />
+                                    <input type="text" placeholder="Game Name" maxlength="100" name="game_name" id="game_name" />
 
                                     <span class="help">
                                         Optional. To help you remember which draft is which, because after two or three drafts that gets confusing. If you leave this blank it will generate something random like "Operation Glorious Drama".
@@ -207,11 +309,20 @@
                                     <h3>Advanced Settings</h3>
                                     <a href="#" class="btn" id="more">Show</a>
                                 </div>
-                                <span class="help">This is where the Slice-generation and faction selection magic happens.</span>
+                                <span class="help">Take a peek under the hood.</span>
                             </div>
 
 
                             <div class="content" id="advanced">
+
+                                <h4>Draft Order</h4>
+                                <div class="input">
+
+                                    <label for="random_draft_order" class="check">
+                                        <input type="checkbox" name="preset_draft_order" id="preset_draft_order" /> Use specified player order (don't randomise)
+                                    </label>
+                                </div>
+                                <h4>Slice generation</h4>
                                 <p>
                                     The “Optimal Value” of a planet is calculated by using the higher of its resource value and influence value as that value, and the other value as zero.
                                     If both of the planet’s resource value and influence value are equal, half that value is used for both of its optimal values.
@@ -262,16 +373,16 @@
                                     </span>
                                 </div>
 
+                                <h4>Custom Factions</h4>
                                 <div class="input">
-                                    <label for="custom_tiles">
-                                        Custom Factions<br />
+                                    <label>
 
                                         <span class="help">
                                             You can pre-select the factions that will be considered in the draft.<br /><br />
                                             If you don't check enough factions to fill up the draft (based on the number of factions above), the generator will add some random (unchecked) ones. <br />
                                             If you check more than enough (e.g: checking 10 factions when the draft only needs 8), a random selection will be made from the checked factions. <br /><br />
                                             This means that if you want to <strong>exclude</strong> certain factions from the draft, you need to check everything except the ones you wish to exclude, and we'll do the rest.<br /><br />
-                                            <strong>Note: once you start fiddling with this, the above options to include/exclude PoK or Keleres will be ignored.</strong>
+                                            <strong>Note: You can change the selectable factions by checking or unchecking the boxes up where it says "Draftable Factions".</strong>
                                         </span>
 
                                         <br />
@@ -280,7 +391,7 @@
                                         </span>
                                     </label>
 
-                                    <div class="input-group">
+                                    <div class="input-group factions">
                                         <?php require_once 'factions.php'; ?>
                                     </div>
 
@@ -304,7 +415,7 @@
         </div>
     </div>
 
-    <div id="loading">
+    <div class="overlay" id="loading">
         Loading. Please wait.<br />
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;display:block;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
             <circle cx="50" cy="50" r="0" fill="none" stroke="#fefcf8" stroke-width="2">
@@ -327,4 +438,5 @@
     <script src="<?= url('js/vendor.js?v=' . $_ENV['VERSION']) ?>"></script>
     <script src="<?= url('js/main.js?v=' . $_ENV['VERSION']) ?>"></script>
 </body>
+
 </html>

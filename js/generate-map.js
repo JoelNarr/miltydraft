@@ -382,6 +382,41 @@ function generate_map() {
         }
     }
 
+    let speaker_order = [];
+    for(let pid in draft.draft.players) {
+        let p = draft.draft.players[pid];
+        if(p.position != null) {
+            speaker_order[p.position] = p.name;
+        }
+    }
+
+    let slices_html = '';
+    for(let i = 0; i < draft.config.players.length; i++) {
+        let s = speaker_order[i];
+
+        if(typeof(s) == 'undefined') {
+            s = 'Unknown';
+        }
+
+        let tpl = [
+            [-1, 0, i + '-3'],
+            [0, -1, i + '-4'],
+            [-1, 1, i + '-0'],
+            [0, 0, i + '-1'],
+            [1, 0, i + '-2'],
+            [0, 1, i + '-H'],
+        ];
+
+        let result = '';
+        for(let u = 0; u < tpl.length; u++) {
+            result += draw_tile(tpl[u]).html;
+        }
+
+        slices_html += '<div class="slice"><h3>' + (i + 1) + ': ' + s + '</h3><div class="map-offset"><div class="map">' + result + '</div></div></div>';
+    }
+
+
+
     for(let u = 0; u < TTS_string.length; u++) {
         if(typeof(TTS_string[u]) == 'undefined' || TTS_string[u] == "EMPTY") TTS_string[u] = 0;
     }
@@ -389,6 +424,7 @@ function generate_map() {
 
     $('.map-container').attr('data-p', draft.config.players.length)
     $('#map-wrap').html(map);
+    $('#mapslices-wrap').html(slices_html);
     $('#tile-gather').html(all_tiles.sort(function(a, b) {
         if(isNaN(a)) a = a.toString().substr(0, a.length - 1);
         if(isNaN(b)) b = b.toString().substr(0, b.length - 1);
@@ -463,9 +499,13 @@ function draw_tile(tile) {
         }
     }
 
-    if(tilename != 'EMPTY' && tilename != 0) all_tiles.push(tilename);
+    if(tilename != 'EMPTY' && tilename != 0 && !all_tiles.includes(tilename)) all_tiles.push(tilename);
 
-    let html = '<img src="' + window.routes.tile_images + '/ST_' + tilename + '.png' + '" data-rotate="' + rotation + '" data-q="' + tile[0] +'" data-r="' + tile[1] + '" /><img class="zoom" src="' + window.routes.tile_images + '/ST_' + tilename + '.png' + '" data-rotate="' + rotation + '" data-q="' + tile[0] +'" data-r="' + tile[1] + '" /><span data-q="' + tile[0] +'" data-r="' + tile[1] + '">' + label + '</span>';
+    let tile_image =  tilename + '.png';
+    if(tile_image.substring(0, 2) != 'DS') tile_image = 'ST_' + tile_image;
+    tile_image = window.routes.tile_images + '/' + tile_image;
+
+    let html = '<img src="' + tile_image + '" data-rotate="' + rotation + '" data-q="' + tile[0] +'" data-r="' + tile[1] + '" /><img class="zoom" src="' + tile_image + '" data-rotate="' + rotation + '" data-q="' + tile[0] +'" data-r="' + tile[1] + '" /><span data-q="' + tile[0] +'" data-r="' + tile[1] + '">' + label + '</span>';
 
     return {
         html: html,

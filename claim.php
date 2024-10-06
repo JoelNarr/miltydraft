@@ -1,35 +1,27 @@
 <?php
-    require_once 'boot.php';
 
+require_once 'boot.php';
 
-    $draft = get_draft(get('draft'));
-    $unclaim = get('unclaim') == 1;
+$draft = \App\Draft::load(get('draft'));
+$unclaim = get('unclaim') == 1;
+$playerId = get('player');
 
-    $p = &$draft['draft']['players'][get('player')];
+if ($unclaim) {
+    // Not enforcing this here yet because it would break for older drafts
+    // if (!$draft->isPlayerSecret(playerId, get('secret'))) return_error('You are not allowed to do this!');
+    $result = $draft->unclaim($playerId);
+} else {
+    $result = $draft->claim($playerId);
+}
 
-    if($unclaim) {
-        if(!$p['claimed']) {
-            return_error('Already unclaimed');
-        } else {
-            $p['claimed'] = false;
-            $result = save_draft($draft);
-            return_data([
-                'draft' => $draft,
-                'player' => $p['id'],
-                'success' => $result
-            ]);
-        }
-    } else {
-        if($p['claimed']) {
-            return_error('Already claimed');
-        } else {
-            $p['claimed'] = true;
-            $result = save_draft($draft);
-            return_data([
-                'draft' => $draft,
-                'player' => $p['id'],
-                'success' => $result
-            ]);
-        }
-    }
-?>
+$data = [
+    'draft' => $draft,
+    'player' => $playerId,
+    'success' => $result
+];
+
+if ($unclaim == false) {
+    $data['secret'] = $draft->getPlayerSecret($playerId);
+}
+
+return_data($data);
